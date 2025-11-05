@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# Environment files
+.env
+.env.*   # contoh: .env.development, .env.production
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Build & runtime
+dist/
+build/
+coverage/
+.tmp/
+.cache/
+
+# Editor
+.vscode/
+.idea/
+*.swp
