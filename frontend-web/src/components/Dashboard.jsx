@@ -171,7 +171,11 @@ const Dashboard = () => {
               />
             </svg>
             <div className="speed-display">
-              <div className="speed-num">{Math.round(telemetry?.speed || 0)}</div>
+              <div className="speed-num">
+                {telemetry?.speed != null 
+                  ? Math.round(parseFloat(telemetry.speed))
+                  : 0}
+              </div>
               <div className="speed-unit">km/h</div>
             </div>
           </div>
@@ -179,25 +183,41 @@ const Dashboard = () => {
           <div className="stats-grid">
             <div className="stat-box">
               <div className="stat-label">Position X</div>
-              <div className="stat-value">{(telemetry?.x_position || 0).toFixed(2)} m</div>
+              <div className="stat-value">
+                {telemetry?.x_position != null 
+                  ? parseFloat(telemetry.x_position).toFixed(2) 
+                  : '0.00'} m
+              </div>
             </div>
             <div className="stat-box">
               <div className="stat-label">Position Y</div>
-              <div className="stat-value">{(telemetry?.y_position || 0).toFixed(2)} m</div>
+              <div className="stat-value">
+                {telemetry?.y_position != null 
+                  ? parseFloat(telemetry.y_position).toFixed(2) 
+                  : '0.00'} m
+              </div>
             </div>
             <div className="stat-box">
               <div className="stat-label">Heading</div>
-              <div className="stat-value">{telemetry?.heading || 0}°</div>
+              <div className="stat-value">
+                {telemetry?.heading != null 
+                  ? Math.round(parseFloat(telemetry.heading))
+                  : 0}°
+              </div>
             </div>
             <div className="stat-box">
               <div className="stat-label">Distance</div>
               <div className="stat-value">
-                {selectedWaypoint && telemetry
-                  ? Math.sqrt(
-                      Math.pow((telemetry.x_position || 0) - selectedWaypoint.x_coordinate, 2) +
-                      Math.pow((telemetry.y_position || 0) - selectedWaypoint.y_coordinate, 2)
-                    ).toFixed(2)
-                  : '0.00'} m
+                {(() => {
+                  if (!selectedWaypoint || !telemetry) return '0.00';
+                  try {
+                    const dx = parseFloat(telemetry.x_position || 0) - parseFloat(selectedWaypoint.x_coordinate);
+                    const dy = parseFloat(telemetry.y_position || 0) - parseFloat(selectedWaypoint.y_coordinate);
+                    return Math.sqrt(dx * dx + dy * dy).toFixed(2);
+                  } catch (e) {
+                    return '0.00';
+                  }
+                })()} m
               </div>
             </div>
           </div>
@@ -318,16 +338,16 @@ const Dashboard = () => {
               {telemetry && (
                 <g>
                   <circle
-                    cx={telemetry.x_position || 0}
-                    cy={-(telemetry.y_position || 0)}
+                    cx={parseFloat(telemetry.x_position) || 0}
+                    cy={-(parseFloat(telemetry.y_position) || 0)}
                     r="0.5"
                     fill="#3b82f6"
                   />
                   <line
-                    x1={telemetry.x_position || 0}
-                    y1={-(telemetry.y_position || 0)}
-                    x2={(telemetry.x_position || 0) + Math.cos((telemetry.heading || 0) * Math.PI / 180) * 1}
-                    y2={-(telemetry.y_position || 0) - Math.sin((telemetry.heading || 0) * Math.PI / 180) * 1}
+                    x1={parseFloat(telemetry.x_position) || 0}
+                    y1={-(parseFloat(telemetry.y_position) || 0)}
+                    x2={(parseFloat(telemetry.x_position) || 0) + Math.cos((parseFloat(telemetry.heading) || 0) * Math.PI / 180) * 1}
+                    y2={-(parseFloat(telemetry.y_position) || 0) - Math.sin((parseFloat(telemetry.heading) || 0) * Math.PI / 180) * 1}
                     stroke="#3b82f6"
                     strokeWidth="0.2"
                   />
@@ -339,7 +359,10 @@ const Dashboard = () => {
           <div className="map-info">
             <div className="info-row">
               <span>Current Position:</span>
-              <span>X: {(telemetry?.x_position || 0).toFixed(2)}m, Y: {(telemetry?.y_position || 0).toFixed(2)}m</span>
+              <span>
+              X: {telemetry?.x_position != null ? parseFloat(telemetry.x_position).toFixed(2) : '0.00'}m, 
+              Y: {telemetry?.y_position != null ? parseFloat(telemetry.y_position).toFixed(2) : '0.00'}m
+            </span>
             </div>
             {selectedWaypoint && (
               <div className="info-row">
